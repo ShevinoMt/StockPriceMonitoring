@@ -4,6 +4,7 @@ using StockPricingMonitoring.Services;
 using StockPricingMonitoring.Repositories.EF.Infra;
 using StockPricingMonitoring.Repositories.EF;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace StockPriceMonitoring.Api
 {
@@ -21,8 +22,35 @@ namespace StockPriceMonitoring.Api
 
             
             builder.Services.PopulateApiServices(builder.Configuration);
-            
 
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.EnableAnnotations();
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Andre Cassar - Stock Monitoring API",
+                    Description = "Stock Monitoring API",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Andre Cassar",
+                        Email = "andre@andrecassar.com",
+                        
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Use under LICX",
+                    }
+                });
+
+                foreach (var name in Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.AllDirectories))
+                {
+                    options.IncludeXmlComments(name);
+                }
+
+
+            }).AddSwaggerGenNewtonsoftSupport();
 
             // CORS
             builder.Services.AddCors(options =>
