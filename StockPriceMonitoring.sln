@@ -1,0 +1,80 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 Infrastructure", "01 Infrastructure", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockPriceMonitoring.Core", "Models\StockPriceMonitoring.Core\StockPriceMonitoring.Core.csproj", "{8D37D696-4DDE-4FE8-8618-B6D91BB0273E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{2ED69277-A13E-4976-A96A-8296DCE1A672}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockPriceMonitoring.Api", "API\StockPriceMonitoring.Api\StockPriceMonitoring.Api.csproj", "{38A4A75D-5931-4F8C-A761-60B48393FD7B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 Repositories", "02 Repositories", "{4A28AFD1-BF42-4D62-A54F-5CEBBBDE00F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockPricingMonitoring.Repositories.Core", "Repositories\StockPricingMonitoring.Repositories.Core\StockPricingMonitoring.Repositories.Core.csproj", "{3981E601-CC2A-46C2-85B2-986C67EEF7F9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 Services", "03 Services", "{4A769DC0-2024-4A7D-97F1-59C08CF52589}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockPricingMonitoring.Services.Core", "Services\StockPricingMonitoring.Services.Core\StockPricingMonitoring.Services.Core.csproj", "{253230B3-F83A-4394-B70A-A1037A69CE14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockPricingMonitoring.Repositories.EF", "Repositories\StockPricingMonitoring.Repositories.EF\StockPricingMonitoring.Repositories.EF.csproj", "{32557302-3366-4530-ABB7-A13A239E35BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockPricingMonitoring.Services", "Services\StockPricingMonitoring.Services\StockPricingMonitoring.Services.csproj", "{E1C336AA-A8F2-4210-B1C7-4FDE970FCD6A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{022B3816-5945-444A-BD70-34B87755F88C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockPricingMonitoring.Tests", "Unit Tests\StockPricingMonitoring.Tests\StockPricingMonitoring.Tests.csproj", "{E28E787E-2B26-40F5-A072-B5A002AB1AF7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8D37D696-4DDE-4FE8-8618-B6D91BB0273E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D37D696-4DDE-4FE8-8618-B6D91BB0273E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D37D696-4DDE-4FE8-8618-B6D91BB0273E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D37D696-4DDE-4FE8-8618-B6D91BB0273E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38A4A75D-5931-4F8C-A761-60B48393FD7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38A4A75D-5931-4F8C-A761-60B48393FD7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38A4A75D-5931-4F8C-A761-60B48393FD7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38A4A75D-5931-4F8C-A761-60B48393FD7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3981E601-CC2A-46C2-85B2-986C67EEF7F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3981E601-CC2A-46C2-85B2-986C67EEF7F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3981E601-CC2A-46C2-85B2-986C67EEF7F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3981E601-CC2A-46C2-85B2-986C67EEF7F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{253230B3-F83A-4394-B70A-A1037A69CE14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{253230B3-F83A-4394-B70A-A1037A69CE14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{253230B3-F83A-4394-B70A-A1037A69CE14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{253230B3-F83A-4394-B70A-A1037A69CE14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32557302-3366-4530-ABB7-A13A239E35BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32557302-3366-4530-ABB7-A13A239E35BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32557302-3366-4530-ABB7-A13A239E35BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32557302-3366-4530-ABB7-A13A239E35BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1C336AA-A8F2-4210-B1C7-4FDE970FCD6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1C336AA-A8F2-4210-B1C7-4FDE970FCD6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1C336AA-A8F2-4210-B1C7-4FDE970FCD6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1C336AA-A8F2-4210-B1C7-4FDE970FCD6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E28E787E-2B26-40F5-A072-B5A002AB1AF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E28E787E-2B26-40F5-A072-B5A002AB1AF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E28E787E-2B26-40F5-A072-B5A002AB1AF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E28E787E-2B26-40F5-A072-B5A002AB1AF7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8D37D696-4DDE-4FE8-8618-B6D91BB0273E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{38A4A75D-5931-4F8C-A761-60B48393FD7B} = {2ED69277-A13E-4976-A96A-8296DCE1A672}
+		{3981E601-CC2A-46C2-85B2-986C67EEF7F9} = {4A28AFD1-BF42-4D62-A54F-5CEBBBDE00F0}
+		{253230B3-F83A-4394-B70A-A1037A69CE14} = {4A769DC0-2024-4A7D-97F1-59C08CF52589}
+		{32557302-3366-4530-ABB7-A13A239E35BF} = {4A28AFD1-BF42-4D62-A54F-5CEBBBDE00F0}
+		{E1C336AA-A8F2-4210-B1C7-4FDE970FCD6A} = {4A769DC0-2024-4A7D-97F1-59C08CF52589}
+		{E28E787E-2B26-40F5-A072-B5A002AB1AF7} = {022B3816-5945-444A-BD70-34B87755F88C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C230F90A-3ADD-4423-8484-65F54A9BFC8A}
+	EndGlobalSection
+EndGlobal

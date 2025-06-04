@@ -1,0 +1,341 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Alert Service</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .price-card {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .alert-form {
+            display: grid;
+            gap: 10px;
+            max-width: 400px;
+        }
+
+        .alert-item {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin: 5px 0;
+            border-radius: 3px;
+        }
+
+        .triggered {
+            background-color: #ffe6e6;
+            border-color: #ff9999;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background: #0056b3;
+            }
+
+        input, select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .notification {
+            padding: 10px;
+            margin: 5px 0;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 3px;
+        }
+
+        .user-section {
+            background-color: #f8f9fa;
+            border: 2px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Stock Alert Service</h1>
+
+        <div class="section user-section">
+            <h2>User ID</h2>
+            <div class="alert-form">
+                <input type="text" id="userId" placeholder="User ID" value="user_X">
+                <small style="color: #666;">Enter your User ID to view and manage alerts</small>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Live Stock Prices</h2>
+            <!--<button onclick="loadCurrentPrices()" style="margin-bottom: 15px;">Refresh Prices</button>-->
+            <div id="prices" class="price-grid"></div>
+        </div>
+
+        <div class="section">
+            <h2>Create Price Alert</h2>
+            <div class="alert-form">
+                <input type="text" id="symbol" placeholder="Stock Symbol (e.g., AAPL)" value="AAPL">
+                <input type="number" id="threshold" placeholder="Price Threshold" step="0.01" value="200.00">
+                <select id="alertType">
+                    <option value="0">Above Threshold</option>
+                    <option value="1">Below Threshold</option>
+                </select>
+                <button onclick="createAlert()">Create Alert</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Your Alerts</h2>
+            <button onclick="loadUserAlerts()">Refresh Alerts</button>
+            <div id="alerts"></div>
+        </div>
+
+        <div class="section">
+            <h2>Notifications</h2>
+            <div id="notifications"></div>
+        </div>
+    </div>
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .configureLogging(signalR.LogLevel.Debug)
+            .withUrl("/notificationhub")
+            //.withUrl("https://localhost:44379/notificationhub")
+            .build();
+
+        let currentUserId = null;
+
+        connection.start().then(function () {
+            console.log("Connected to SignalR hub");
+
+            currentUserId = document.getElementById('userId').value || 'user_X';
+
+            connection.invoke("JoinUserGroup", currentUserId).then(function () {
+                console.log(`Joined user group: ${currentUserId}`);
+            }).catch(function (err) {
+                console.error("Error joining user group:", err);
+            });
+
+            loadCurrentPrices();
+            loadUserAlerts();
+        }).catch(function (err) {
+            console.error(err.toString());
+        });
+
+        connection.on("PriceUpdate", function (price) {
+            updatePriceDisplay(price);
+        });
+
+        connection.on("AlertTriggered", function (notification) {
+            showNotification(notification);
+            loadUserAlerts(); // Refresh alerts to show triggered status
+        });
+
+        async function loadCurrentPrices() {
+            try {
+                const response = await fetch('/api/stockprices');
+                const prices = await response.json();
+                displayPrices(prices);
+            } catch (error) {
+                console.error('Error loading prices:', error);
+            }
+        }
+
+        function displayPrices(prices) {
+            const container = document.getElementById('prices');
+            container.innerHTML = prices.map(price => `
+                        <div class="price-card" id="price-${price.symbol}">
+                            <h3>${price.symbol}</h3>
+                            <div style="font-size: 24px; font-weight: bold;">${price.price.toFixed(2)}</div>
+                            <small>Updated: ${new Date(price.timestamp).toLocaleTimeString()}</small>
+                        </div>
+                    `).join('');
+        }
+
+        function updatePriceDisplay(price) {
+            const element = document.getElementById(`price-${price.symbol}`);
+            if (element) {
+                element.innerHTML = `
+                            <h3>${price.symbol}</h3>
+                            <div style="font-size: 24px; font-weight: bold;">${price.price.toFixed(2)}</div>
+                            <small>Updated: ${new Date(price.timestamp).toLocaleTimeString()}</small>
+                        `;
+            }
+        }
+
+        async function createAlert() {
+            const userId = document.getElementById('userId').value;
+            const symbol = document.getElementById('symbol').value.toUpperCase();
+            const threshold = parseFloat(document.getElementById('threshold').value);
+            const type = parseInt(document.getElementById('alertType').value);
+
+            if (!userId || !symbol || isNaN(threshold)) {
+                alert('Please fill all fields correctly');
+                return;
+            }
+
+            if (currentUserId !== userId && connection.state === "Connected") {
+                if (currentUserId) {
+                    await connection.invoke("LeaveUserGroup", currentUserId);
+                }
+                await connection.invoke("JoinUserGroup", userId);
+                currentUserId = userId;
+            }
+
+            try {
+                const response = await fetch('/api/alerts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: userId,
+                        symbol: symbol,
+                        threshold: threshold,
+                        type: type
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Alert created successfully!');
+                    loadUserAlerts();
+                    // Clear form
+                    document.getElementById('symbol').value = '';
+                    document.getElementById('threshold').value = '';
+                } else {
+                    const error = await response.json();
+                    alert('Error: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error creating alert:', error);
+                alert('Error creating alert');
+            }
+        }
+
+        async function loadUserAlerts() {
+            const userId = document.getElementById('userId').value;
+            if (!userId) return;
+
+            try {
+                const response = await fetch(`/api/alerts/user/${userId}`);
+                const alerts = await response.json();
+                displayAlerts(alerts);
+            } catch (error) {
+                console.error('Error loading alerts:', error);
+            }
+        }
+
+        function displayAlerts(alerts) {
+            const container = document.getElementById('alerts');
+            if (alerts.length === 0) {
+                container.innerHTML = '<p>No alerts found</p>';
+                return;
+            }
+
+            container.innerHTML = alerts.map(alert => `
+                        <div class="alert-item ${alert.status === 1 ? 'triggered' : ''}">
+                            <strong>${alert.symbol}</strong> -
+                            ${alert.type === 0 ? 'Above' : 'Below'} ${alert.threshold.toFixed(2)}
+                            <br>
+                            Status: ${getStatusText(alert.status)}
+                            ${alert.triggeredAt ? `<br>Triggered: ${new Date(alert.triggeredAt).toLocaleString()} at ${alert.triggeredPrice?.toFixed(2)}` : ''}
+                            <br>
+                            <small>Created: ${new Date(alert.createdAt).toLocaleString()}</small>
+                            ${alert.status === 0 ? `<button onclick="deleteAlert(${alert.id})" style="float: right; background: #dc3545;">Delete</button>` : ''}
+                        </div>
+                    `).join('');
+        }
+
+        function getStatusText(status) {
+            switch (status) {
+                case 0: return 'Active';
+                case 1: return 'Triggered';
+                case 2: return 'Cancelled';
+                default: return 'Unknown';
+            }
+        }
+
+        async function deleteAlert(alertId) {
+            const userId = document.getElementById('userId').value;
+            if (!confirm('Are you sure you want to delete this alert?')) return;
+
+            try {
+                const response = await fetch(`/api/alerts/${alertId}/user/${userId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    loadUserAlerts();
+                } else {
+                    alert('Error deleting alert');
+                }
+            } catch (error) {
+                console.error('Error deleting alert:', error);
+                alert('Error deleting alert');
+            }
+        }
+
+        function showNotification(notification) {
+            const container = document.getElementById('notifications');
+            const notificationElement = document.createElement('div');
+            notificationElement.className = 'notification';
+            notificationElement.innerHTML = `
+                        <strong>Alert Triggered!</strong><br>
+                        ${notification.message}<br>
+                        <small>${new Date(notification.timestamp).toLocaleString()}</small>
+                    `;
+            container.insertBefore(notificationElement, container.firstChild);
+
+            // Remove notification after 60 seconds
+            setTimeout(() => {
+                if (notificationElement.parentNode) {
+                    notificationElement.parentNode.removeChild(notificationElement);
+                }
+            }, 60000);
+        }
+
+        // Load data on page load
+        window.onload = function () {
+            if (connection.state === "Disconnected") {
+                connection.start().then(function () {
+                    loadCurrentPrices();
+                    loadUserAlerts();
+
+                    // Auto-refresh prices every 30 seconds as backup
+                    setInterval(loadCurrentPrices, 30000);
+                });
+            }
+        };
+    </script>
+</body>
+</html>

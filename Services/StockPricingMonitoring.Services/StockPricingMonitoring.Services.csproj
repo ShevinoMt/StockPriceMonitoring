@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MemoryPack" Version="1.21.4" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Models\StockPriceMonitoring.Core\StockPriceMonitoring.Core.csproj" />
+    <ProjectReference Include="..\..\Repositories\StockPricingMonitoring.Repositories.Core\StockPricingMonitoring.Repositories.Core.csproj" />
+    <ProjectReference Include="..\StockPricingMonitoring.Services.Core\StockPricingMonitoring.Services.Core.csproj" />
+  </ItemGroup>
+
+</Project>

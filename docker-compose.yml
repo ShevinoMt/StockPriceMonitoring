@@ -1,0 +1,51 @@
+﻿version: '3.8'
+
+services:
+  stockalert-api:
+    build: .
+    ports:
+      - "80:8080"
+      - "443:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=mysql-stockalert;Port=3306;Database=StockAlertDb;Uid=root;Pwd=Password123!;
+      - ConnectionStrings__RedisConnection=redis-stockalert:6379
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - stockalert-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-stockalert
+    environment:
+      - MYSQL_ROOT_PASSWORD=Password123!
+      - MYSQL_DATABASE=StockAlertDb
+      - MYSQL_USER=stockalert
+      - MYSQL_PASSWORD=StockAlert123!
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - stockalert-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis-stockalert
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - stockalert-network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  stockalert-network:
+    driver: bridge
